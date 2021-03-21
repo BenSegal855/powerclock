@@ -1,10 +1,10 @@
-const { RadioGroup } = require('powercord/components/settings');
+const { RadioGroup, SwitchItem } = require('powercord/components/settings');
 const { React } = require('powercord/webpack');
 
 module.exports = class Settings extends React.Component {
 
 	render() {
-		const { getSetting, updateSetting } = this.props;
+		const { getSetting, updateSetting, toggleSetting } = this.props;
 		return (
 			<div>
 				<RadioGroup
@@ -23,6 +23,13 @@ module.exports = class Settings extends React.Component {
 				>
 					Time Format
 				</RadioGroup>
+				<SwitchItem
+					value={getSetting('sticky', false)}
+					onChange={() => toggleSetting('sticky')}
+					note='If the clock should always be visible at the top of the server list.'
+				>
+					Sticky
+				</SwitchItem>
 			</div>
 		);
 	}

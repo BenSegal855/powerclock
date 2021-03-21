@@ -21,7 +21,7 @@ module.exports = class PowerClock extends Plugin {
 		inject('powerclock', DefaultHomeButton.prototype, 'render', (_, res) => {
 			if (!Array.isArray(res)) res = [ res ];
 			res.unshift(React.createElement(Clock, {
-				className: 'powerclock',
+				className: 'powerclock sticky',
 				getSetting: this.settings.get,
 				updateSetting: this.settings.update
 			}));

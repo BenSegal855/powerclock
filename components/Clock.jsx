@@ -10,13 +10,14 @@ module.exports = class Clock extends React.PureComponent {
 			mins: new Date().getMinutes(),
 			format: this.props.getSetting('timeFormat') > 1
 				? 0
-				: this.props.getSetting('timeFormat')
+				: this.props.getSetting('timeFormat'),
+			sticky: this.props.getSetting('sticky')
 		};
 	}
 
 	render() {
 		return (
-			<div className='powerclock'>
+			<div className={`powerclock${this.state.sticky ? ' sticky' : ''}`}>
 				{this.state.format === 1
 					? this.state.hours
 					: this.state.hours % 12 === 0
@@ -38,7 +39,8 @@ module.exports = class Clock extends React.PureComponent {
 				mins: new Date().getMinutes(),
 				format: this.props.getSetting('timeFormat') > 1
 					? 0
-					: this.props.getSetting('timeFormat')
+					: this.props.getSetting('timeFormat'),
+				sticky: this.props.getSetting('sticky')
 			});
 		}, 1e3);
 	}
