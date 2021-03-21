@@ -9,29 +9,30 @@ const Settings = require('./components/Settings');
 
 module.exports = class PowerClock extends Plugin {
 
-    async startPlugin() {
-        this.loadStylesheet('./style.css');
+	async startPlugin() {
+		this.loadStylesheet('./style.css');
 
-        powercord.api.settings.registerSettings('powerclock-settings', {
-            category: this.entityID,
-            label: 'Powerclock',
-            render: Settings
-    });
-        const { DefaultHomeButton } = await getModule([ 'DefaultHomeButton' ]);
-        inject('powerclock', DefaultHomeButton.prototype, 'render', (_, res) => {
-            res.unshift(React.createElement(Clock, {
-                className: 'powerclock',
-                getSetting: this.settings.get,
-                updateSetting: this.settings.update
-            }));
-            return res;
-        });
-    }
+		powercord.api.settings.registerSettings('powerclock-settings', {
+			category: this.entityID,
+			label: 'Powerclock',
+			render: Settings
+	});
+		const { DefaultHomeButton } = await getModule([ 'DefaultHomeButton' ]);
+		inject('powerclock', DefaultHomeButton.prototype, 'render', (_, res) => {
+			if (!Array.isArray(res)) res = [ res ];
+			res.unshift(React.createElement(Clock, {
+				className: 'powerclock',
+				getSetting: this.settings.get,
+				updateSetting: this.settings.update
+			}));
+			return res;
+		});
+	}
 
-    pluginWillUnload() {
-        uninject('powerclock');
-        powercord.api.settings.unregisterSettings('powerclock-settings');
-        forceUpdateElement(`.${(getModule([ 'homeIcon', 'downloadProgress' ], false)).tutorialContainer}`);
-    }
+	pluginWillUnload() {
+		uninject('powerclock');
+		powercord.api.settings.unregisterSettings('powerclock-settings');
+		forceUpdateElement(`.${(getModule([ 'homeIcon', 'downloadProgress' ], false)).tutorialContainer}`);
+	}
 
 };
