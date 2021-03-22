@@ -6,7 +6,7 @@
 }
 
 .powerclock.sticky {
-	z-index: 10;
+	z-index: 1;
 	background-color: var(--background-tertiary);
 	position: sticky;
 	top: 0;
