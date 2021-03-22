@@ -11,7 +11,10 @@ module.exports = class Clock extends React.PureComponent {
 			format: this.props.getSetting('timeFormat') > 1
 				? 0
 				: this.props.getSetting('timeFormat'),
-			sticky: this.props.getSetting('sticky')
+			sticky: this.props.getSetting('sticky'),
+			indicator: this.props.getSetting('indicator')
+				? new Date().getHours < 12 ? 'AM' : 'PM'
+				: ''
 		};
 	}
 
@@ -23,7 +26,7 @@ module.exports = class Clock extends React.PureComponent {
 					: this.state.hours % 12 === 0
 						? 12
 						: this.state.hours % 12
-				}:{this.state.mins.toString().padStart(2, '0')}
+				}:{this.state.mins.toString().padStart(2, '0')} {this.state.indicator}
 			</div>
 		);
 	}
@@ -40,7 +43,10 @@ module.exports = class Clock extends React.PureComponent {
 				format: this.props.getSetting('timeFormat') > 1
 					? 0
 					: this.props.getSetting('timeFormat'),
-				sticky: this.props.getSetting('sticky')
+				sticky: this.props.getSetting('sticky'),
+				indicator: this.props.getSetting('indicator')
+					? new Date().getHours < 12 ? 'AM' : 'PM'
+					: ''
 			});
 		}, 1e3);
 	}

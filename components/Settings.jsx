@@ -8,7 +8,10 @@ module.exports = class Settings extends React.Component {
 		return (
 			<div>
 				<RadioGroup
-					onChange={e => updateSetting('timeFormat', e.value)}
+					onChange={e => {
+						updateSetting('timeFormat', e.value);
+						if (e.value === 1) updateSetting('indicator', false);
+					}}
 					value={getSetting('timeFormat', 0)}
 					options={[
 						{
@@ -29,6 +32,13 @@ module.exports = class Settings extends React.Component {
 					note='If the clock should always be visible at the top of the server list.'
 				>
 					Sticky
+				</SwitchItem>
+				<SwitchItem
+					value={getSetting('indicator', false)}
+					onChange={() => toggleSetting('indicator')}
+					disabled={getSetting('timeFormat', 0) !== 0}
+				>
+					AM/PM indicator
 				</SwitchItem>
 			</div>
 		);
