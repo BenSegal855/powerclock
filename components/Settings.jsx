@@ -40,6 +40,13 @@ module.exports = class Settings extends React.Component {
 				>
 					AM/PM indicator
 				</SwitchItem>
+				<SwitchItem
+					value={getSetting('twoDigit', false)}
+					onChange={() => toggleSetting('twoDigit')}
+					note='Will add a 0 to the beginning of the hours if less than 10'
+				>
+					Always show two digits
+				</SwitchItem>
 			</div>
 		);
 	}

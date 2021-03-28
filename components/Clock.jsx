@@ -5,28 +5,13 @@ module.exports = class Clock extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			hours: new Date().getHours(),
-			mins: new Date().getMinutes(),
-			format: this.props.getSetting('timeFormat') > 1
-				? 0
-				: this.props.getSetting('timeFormat'),
-			sticky: this.props.getSetting('sticky'),
-			indicator: this.props.getSetting('indicator')
-				? new Date().getHours() < 12 ? 'AM' : 'PM'
-				: ''
-		};
+		this.state = this.getNewState();
 	}
 
 	render() {
 		return (
 			<div className={`powerclock${this.state.sticky ? ' sticky' : ''}`}>
-				{this.state.format === 1
-					? this.state.hours
-					: this.state.hours % 12 === 0
-						? 12
-						: this.state.hours % 12
-				}:{this.state.mins.toString().padStart(2, '0')} {this.state.indicator}
+				{this.state.hours}:{this.state.mins} {this.state.indicator}
 			</div>
 		);
 	}
@@ -37,22 +22,38 @@ module.exports = class Clock extends React.PureComponent {
 		}
 
 		this.interval = setInterval(async () => {
-			this.setState({
-				hours: new Date().getHours(),
-				mins: new Date().getMinutes(),
-				format: this.props.getSetting('timeFormat') > 1
-					? 0
-					: this.props.getSetting('timeFormat'),
-				sticky: this.props.getSetting('sticky'),
-				indicator: this.props.getSetting('indicator')
-					? new Date().getHours() < 12 ? 'AM' : 'PM'
-					: ''
-			});
+			this.setState(this.getNewState());
 		}, 1e3);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.interval);
+	}
+
+	getNewState() {
+		const format = this.props.getSetting('timeFormat') > 1
+			? 0
+			: this.props.getSetting('timeFormat');
+
+		const now = new Date();
+		let dispHours = format === 1
+			? now.getHours()
+			: now.getHours() % 12 === 0
+				? 12
+				: now.getHours() % 12;
+
+		if (this.props.getSetting('twoDigit')) {
+			dispHours = dispHours.toString().padStart(2, '0');
+		}
+
+		return {
+			hours: dispHours,
+			mins: now.getMinutes().toString().padStart(2, '0'),
+			sticky: this.props.getSetting('sticky'),
+			indicator: this.props.getSetting('indicator')
+				? now.getHours() < 12 ? 'AM' : 'PM'
+				: ''
+		};
 	}
 
 };
