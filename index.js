@@ -6,7 +6,11 @@ const { forceUpdateElement } = require('powercord/util');
 const Clock = require('./components/Clock');
 const Settings = require('./components/Settings');
 
-
+// Thanks Harley
+const getDefaultMethodByKeyword = (mdl, keyword) => {
+	const defaultMethod = mdl.__powercordOriginal_default ?? mdl.default;
+	return typeof defaultMethod === 'function' ? defaultMethod.toString().includes(keyword) : null;
+};
 module.exports = class PowerClock extends Plugin {
 
 	async startPlugin() {
@@ -16,9 +20,11 @@ module.exports = class PowerClock extends Plugin {
 			category: this.entityID,
 			label: 'Powerclock',
 			render: Settings
-	});
-		const homeButton  = await getModule([ 'DefaultHomeButton' ]);
-		inject('powerclock', homeButton, 'DefaultHomeButton', (_, res) => {
+		});
+
+		const homeButton = await getModule(m => getDefaultMethodByKeyword(m, 'showDMsOnly'));
+
+		inject('powerclock', homeButton, 'default', (_, res) => {
 			if (!Array.isArray(res)) res = [ res ];
 			res.unshift(React.createElement(Clock, {
 				className: 'powerclock sticky',
@@ -32,7 +38,8 @@ module.exports = class PowerClock extends Plugin {
 	pluginWillUnload() {
 		uninject('powerclock');
 		powercord.api.settings.unregisterSettings('powerclock-settings');
-		forceUpdateElement(`.${(getModule([ 'homeIcon', 'downloadProgress' ], false)).tutorialContainer}`);
+		forceUpdateElement(`.${getModule([ 'homeIcon', 'downloadProgress' ], false).tutorialContainer}`);
 	}
 
 };
+
