@@ -6,6 +6,11 @@ const { forceUpdateElement } = require('powercord/util');
 const Clock = require('./components/Clock');
 const Settings = require('./components/Settings');
 
+// Thanks Harley
+const getDefaultMethodByKeyword = (mdl, keyword) => {
+	const defaultMethod = mdl.__powercordOriginal_default ?? mdl.default;
+	return typeof defaultMethod === 'function' ? defaultMethod.toString().includes(keyword) : null;
+};
 module.exports = class PowerClock extends Plugin {
 
 	async startPlugin() {
@@ -17,9 +22,9 @@ module.exports = class PowerClock extends Plugin {
 			render: Settings
 		});
 
-		const homeButton = await getModule([ 'HomeButton' ]);
+		const homeButton = await getModule(m => getDefaultMethodByKeyword(m, 'showDMsOnly'));
 
-		inject('powerclock', homeButton, 'HomeButton', (_, res) => {
+		inject('powerclock', homeButton, 'default', (_, res) => {
 			if (!Array.isArray(res)) res = [ res ];
 			res.unshift(React.createElement(Clock, {
 				className: 'powerclock sticky',
